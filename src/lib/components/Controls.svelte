@@ -99,11 +99,23 @@
         font-size: 0.875rem;
     }
 
+    /*
+     * To the right of the controls, as high as a labelled field, so the bar stays one row. When
+     * there isn't room for about three lines of it, it wraps to a row of its own.
+     */
     .hint {
-        flex-basis: 100%;
+        display: flex;
+        flex: 1 1 260px;
+        align-items: center;
+        align-self: stretch;
+        min-width: 0;
         margin: 0;
+        padding-left: 14px;
+        border-left: 2px solid var(--border);
         color: var(--text-muted);
-        font-size: 0.875rem;
+        font-size: 0.8125rem;
+        line-height: 1.35;
+        text-wrap: pretty;
     }
 
     @media (max-width: 600px) {
