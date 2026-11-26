@@ -80,8 +80,8 @@
         font-family: var(--font-mono);
     }
 
-    /* Maximised: the diagram may use the full height. */
-    :global(.workspace[data-max='visual']) .visual {
-        --diagram-height: calc(100dvh - 330px);
+    /* The diagram fills the panel (see HierarchyView). */
+    .visual {
+        height: 100%;
     }
 </style>

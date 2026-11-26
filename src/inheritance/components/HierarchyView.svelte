@@ -13,6 +13,15 @@
     const types = $derived(Object.values(example.types));
     const view = $derived(step.view);
 
+    /** Just around the boxes (and the badges above them), so a narrow example isn't drawn small. */
+    const bounds = $derived.by(() => {
+        const x = Math.min(...types.map((t) => t.x)) - 12;
+        const y = Math.min(...types.map((t) => t.y)) - 24;
+        const right = Math.max(...types.map((t) => t.x + BOX_W)) + 12;
+        const bottom = Math.max(...types.map((t) => t.y + heightOf(t))) + 6;
+        return { x, y, width: right - x, height: bottom - y };
+    });
+
     /** From the child to the parent: a line ending in a hollow triangle. */
     interface Edge {
         id: string;
@@ -73,7 +82,12 @@
         </p>
     </div>
 
-    <svg viewBox="0 0 900 610" role="img" aria-label="Class diagram of the {example.title.toLowerCase()} example">
+    <svg
+        viewBox="{bounds.x} {bounds.y} {bounds.width} {bounds.height}"
+        style:aspect-ratio="{bounds.width} / {bounds.height}"
+        role="img"
+        aria-label="Class diagram of the {example.title.toLowerCase()} example"
+    >
         <defs>
             <marker id="hollow-triangle" viewBox="0 0 14 14" refX="13" refY="7" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" orient="auto">
                 <path d="M0,0 L14,7 L0,14 z" class="arrowhead" />
@@ -139,10 +153,22 @@
 </div>
 
 <style>
+    /*
+     * Fills the panel: the explanation and the legend take what they need, the diagram the rest.
+     * It is as large as the panel's width allows, and shrinks when the panel is lower.
+     */
     .hierarchy {
-        display: grid;
+        display: flex;
+        flex-direction: column;
         gap: 8px;
+        height: 100%;
+        min-height: 0;
         padding: 12px 16px 12px;
+    }
+
+    .explain,
+    .legend {
+        flex: none;
     }
 
     .explain {
@@ -201,10 +227,17 @@
 
     svg {
         display: block;
+        flex: 1 1 auto;
         width: 100%;
         height: auto;
-        /* Leaves room for the explanation and the lower panel; maximised it can grow. */
-        max-height: var(--diagram-height, max(300px, calc(100dvh - 590px)));
+        min-height: 200px;
+    }
+
+    /* Stacked on a small screen, the page scrolls: don't let a tall diagram fill all of it. */
+    @media (max-width: 960px), (max-height: 600px) {
+        svg {
+            max-height: 75vh;
+        }
     }
 
     .edge {
