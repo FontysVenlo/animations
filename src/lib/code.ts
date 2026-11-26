@@ -1,3 +1,4 @@
+import type { Language } from './codemirror.ts';
 import type { BaseStep } from './trace.ts';
 
 /** A file in the code column. */
@@ -8,6 +9,8 @@ export interface CodeFile {
     /** Shown next to the name, e.g. "simplified". */
     readonly detail?: string;
     readonly source: string;
+    /** Default java. */
+    readonly language?: Language;
     /** Share of the column's height. */
     readonly weight: number;
 }

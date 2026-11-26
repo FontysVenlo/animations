@@ -30,7 +30,7 @@
                 {#if file.detail}<span class="detail">{file.detail}</span>{/if}
                 {#if status}<span class="status" class:current={step.file === file.id} class:error={step.file === file.id && step.error}>{status}</span>{/if}
             </header>
-            <CodePanel source={file.source} highlights={highlightsFor(file.id)} />
+            <CodePanel source={file.source} language={file.language} highlights={highlightsFor(file.id)} />
         </section>
     {/each}
 </div>

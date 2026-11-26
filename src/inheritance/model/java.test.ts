@@ -6,7 +6,7 @@ import { promisify } from 'node:util';
 import { afterAll, describe, expect, it } from 'vitest';
 import { SOURCES, type Selection, type Trace, allSelections, mainFile, simulate } from './index.ts';
 
-// The golden test: compile and run the Java students see (the classes in java/inheritance and the
+// The golden test: compile and run the Java students see (the classes in code/inheritance and the
 // Main.java generated for every selection) and check that javac and java print exactly what the
 // animation's console shows. Batched so it stays fast: one javac run for all compile errors, and
 // one javac and one JVM for everything that runs. Skipped when there is no JDK.

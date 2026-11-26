@@ -1,10 +1,17 @@
 import { java } from '@codemirror/lang-java';
-import { HighlightStyle, syntaxHighlighting } from '@codemirror/language';
+import { HighlightStyle, StreamLanguage, syntaxHighlighting } from '@codemirror/language';
+import { shell } from '@codemirror/legacy-modes/mode/shell';
 import { EditorState, RangeSetBuilder, StateEffect, StateField } from '@codemirror/state';
 import { Decoration, type DecorationSet, EditorView, WidgetType, lineNumbers } from '@codemirror/view';
 import { tags as t } from '@lezer/highlight';
 
-// A read-only Java view whose highlighted lines follow the current step (one per file).
+// A read-only code view (Java or a shell script) whose highlighted lines follow the current step
+// (one per file).
+
+export type Language = 'java' | 'shell';
+
+const shellLanguage = StreamLanguage.define(shell);
+const LANGUAGES = { java: () => java(), shell: () => shellLanguage } as const;
 
 export interface CodeHighlights {
     /** Line of the current step (0 for none, e.g. in a file that isn't running). */
@@ -69,8 +76,11 @@ const highlightStyle = HighlightStyle.define([
     { tag: [t.keyword, t.modifier, t.controlKeyword, t.definitionKeyword, t.operatorKeyword], color: 'var(--syntax-keyword)' },
     { tag: [t.typeName, t.standard(t.typeName)], color: 'var(--syntax-type)' },
     { tag: [t.number, t.bool, t.null], color: 'var(--syntax-literal)' },
-    { tag: [t.lineComment, t.blockComment], color: 'var(--syntax-comment)', fontStyle: 'italic' },
-    { tag: t.function(t.variableName), color: 'var(--syntax-function)' },
+    // t.comment: shell comments (Java's are line and block comments).
+    { tag: [t.comment, t.lineComment, t.blockComment], color: 'var(--syntax-comment)', fontStyle: 'italic' },
+    // t.standard(t.variableName): commands in a shell script, such as git; t.attributeName: their options.
+    { tag: [t.function(t.variableName), t.standard(t.variableName)], color: 'var(--syntax-function)' },
+    { tag: t.attributeName, color: 'var(--syntax-type)' },
     { tag: t.definition(t.variableName), color: 'var(--syntax-definition)' },
 ]);
 
@@ -96,12 +106,12 @@ const theme = EditorView.theme({
     },
 });
 
-function createState(source: string): EditorState {
+function createState(source: string, language: Language): EditorState {
     return EditorState.create({
         doc: source,
         extensions: [
             lineNumbers(),
-            java(),
+            LANGUAGES[language](),
             syntaxHighlighting(highlightStyle),
             theme,
             EditorState.readOnly.of(true),
@@ -111,12 +121,12 @@ function createState(source: string): EditorState {
     });
 }
 
-export function createView(parent: HTMLElement, source: string): EditorView {
-    return new EditorView({ parent, state: createState(source) });
+export function createView(parent: HTMLElement, source: string, language: Language): EditorView {
+    return new EditorView({ parent, state: createState(source, language) });
 }
 
-export function showCode(view: EditorView, source: string, highlights: CodeHighlights | null): void {
-    if (view.state.doc.toString() !== source) view.setState(createState(source));
+export function showCode(view: EditorView, source: string, language: Language, highlights: CodeHighlights | null): void {
+    if (view.state.doc.toString() !== source) view.setState(createState(source, language));
     view.dispatch({ effects: setHighlights.of(highlights) });
 }
 

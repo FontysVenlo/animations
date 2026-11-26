@@ -7,7 +7,7 @@ import {
     findScenario,
     findVariant,
     listIndex,
-    parseJava,
+    parseSource,
     simulate,
     step71,
     stringHashCode,
@@ -61,11 +61,11 @@ describe('Java files', () => {
     });
 
     it('rejects a marker used twice', () => {
-        expect(() => parseJava('a(); // @x\nb(); // @x')).toThrow('twice');
+        expect(() => parseSource('a(); // @x\nb(); // @x')).toThrow('twice');
     });
 
     it('maps markers to lines', () => {
-        const file = parseJava('class A {\n    int x; // @x\n}');
+        const file = parseSource('class A {\n    int x; // @x\n}');
         expect(file.labels.get('x')).toBe(2);
         expect(file.text.split('\n')[1]).toBe('    int x;');
     });

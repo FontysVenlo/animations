@@ -82,14 +82,14 @@ To make a bug easy to fix:
 Every animation is a small browser app built with [Svelte](https://svelte.dev), [Vite](https://vite.dev) and TypeScript. The code you see is shown with [CodeMirror](https://codemirror.net). The animations share one shell: the layout, the timeline, playback, the keyboard, maximise and full screen, and the shareable URL.
 
 ```
-java/<animation>/*.java ──(?raw import)──► the code students see, with // @markers
+code/<animation>/*      ──(?raw import)──► the code students see, with // @markers
                                              │
 choices ──► simulate() ──► one immutable snapshot per step: line, call stack, console, what the visual shows
                                              │
 UI renders steps[i]  ·  → = i + 1  ·  ← = i − 1
 ```
 
-- **Real Java:** the code students see is real Java in [`java/`](java/). Lines the simulation stops on end with a marker such as `// @put.hash`. The marker is removed from the code shown ([`src/lib/lines.ts`](src/lib/lines.ts)).
+- **Real code:** the code students see is real code in [`code/`](code/). Lines the simulation stops on end with a marker such as `// @put.hash`. The marker is removed from the code shown ([`src/lib/lines.ts`](src/lib/lines.ts)).
 - **Simulation:** each animation's `simulate()` follows that code by hand and records a snapshot at every step. The current file and line, the call stack, the console and everything the visual needs are in that snapshot. Stepping backwards is just showing an earlier snapshot.
 - **Golden tests:** each animation has a `java.test.ts` that compiles and runs the real Java with `javac` and `java`, and checks that it prints exactly what the animation's console shows.
   - For HashMap, it runs every `Book` × scenario.
@@ -103,7 +103,7 @@ src/
   index/          the index page
   hashmap/        App, components, session, url, model/ (simulate, scenarios, tests)
   inheritance/    App, components, session, url, model/ (hierarchy, scenarios, simulate, tests)
-java/hashmap/, java/inheritance/   the Java students see
+code/hashmap/, code/inheritance/   the code students see
 index.html, hashmap/index.html, inheritance/index.html   one page per animation
 ```
 
@@ -124,7 +124,7 @@ npm run preview    # serve the built site
 
 1. Add it to `ANIMATIONS` in [`src/animations.ts`](src/animations.ts) (id, title, topic, description, icon). Add its name to the `animation` dropdowns in [`.github/ISSUE_TEMPLATE/bug.yml`](.github/ISSUE_TEMPLATE/bug.yml) and [`idea.yml`](.github/ISSUE_TEMPLATE/idea.yml).
 2. Create `<id>/index.html` (copy one of the others) and add it to `build.rollupOptions.input` in [`vite.config.ts`](vite.config.ts).
-3. Put the code students see in `java/<id>/`, with `// @marker` comments on the lines to stop on.
+3. Put the code students see in `code/<id>/`, with `// @marker` comments (`# @marker` in a shell script) on the lines to stop on.
 4. In `src/<id>/`:
    - write `model/simulate.ts`, whose steps extend `BaseStep` from [`src/lib/trace.ts`](src/lib/trace.ts);
    - write a `Session` that extends `StepSession`;

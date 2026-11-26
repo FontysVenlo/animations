@@ -1,13 +1,13 @@
-import author from '../../../java/hashmap/book/author.java?raw';
-import constant from '../../../java/hashmap/book/constant.java?raw';
-import equalsOnly from '../../../java/hashmap/book/equals-only.java?raw';
-import generated from '../../../java/hashmap/book/generated.java?raw';
-import hashcodeOnly from '../../../java/hashmap/book/hashcode-only.java?raw';
-import none from '../../../java/hashmap/book/none.java?raw';
-import random from '../../../java/hashmap/book/random.java?raw';
-import { type JavaFile, parseJava } from '../../lib/lines.ts';
+import author from '../../../code/hashmap/book/author.java?raw';
+import constant from '../../../code/hashmap/book/constant.java?raw';
+import equalsOnly from '../../../code/hashmap/book/equals-only.java?raw';
+import generated from '../../../code/hashmap/book/generated.java?raw';
+import hashcodeOnly from '../../../code/hashmap/book/hashcode-only.java?raw';
+import none from '../../../code/hashmap/book/none.java?raw';
+import random from '../../../code/hashmap/book/random.java?raw';
+import { type SourceFile, parseSource } from '../../lib/lines.ts';
 
-// The Book implementations students can choose. Each is a real Book.java in java/book/.
+// The Book implementations students can choose. Each is a real Book.java in code/hashmap/book/.
 
 /** What Book.hashCode() does. 'object' means it isn't overridden. */
 export type HashKind = 'object' | 'generated' | 'constant' | 'random' | 'author';
@@ -23,10 +23,10 @@ export interface Variant {
     readonly equals: EqualsKind;
     /** The Book.java source, with markers. */
     readonly raw: string;
-    readonly file: JavaFile;
+    readonly file: SourceFile;
 }
 
-const variant = (v: Omit<Variant, 'file'>): Variant => ({ ...v, file: parseJava(v.raw) });
+const variant = (v: Omit<Variant, 'file'>): Variant => ({ ...v, file: parseSource(v.raw) });
 
 export const VARIANTS: readonly Variant[] = [
     variant({

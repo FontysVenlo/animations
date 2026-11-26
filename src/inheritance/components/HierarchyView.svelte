@@ -1,4 +1,5 @@
 <script lang="ts">
+    import Rich from '../../lib/components/Rich.svelte';
     import type { Example, Step, Tone, TypeInfo } from '../model/index.ts';
 
     let { step, example }: { step: Step; example: Example } = $props();
@@ -53,33 +54,13 @@
 
     const PHASES = { compile: 'Compile time', run: 'Runtime', error: 'Compile error', exception: 'Exception', done: 'Done' } as const;
 
-    /** `code`, **bold** and new lines in an explanation. */
-    function rich(text: string): { kind: 'text' | 'code' | 'bold' | 'br'; text: string }[] {
-        return text
-            .split(/(`[^`]+`|\*\*[^*]+\*\*|\n)/)
-            .filter((part) => part !== '')
-            .map((part) =>
-                part === '\n'
-                    ? { kind: 'br', text: '' }
-                    : part.startsWith('`')
-                      ? { kind: 'code', text: part.slice(1, -1) }
-                      : part.startsWith('**')
-                        ? { kind: 'bold', text: part.slice(2, -2) }
-                        : { kind: 'text', text: part },
-            );
-    }
-
     const TONES: Record<Tone, string> = { compile: 'var(--accent)', object: 'var(--compare)', found: 'var(--found)', error: 'var(--danger)' };
 </script>
 
 <div class="hierarchy">
     <div class="explain {view.phase}" aria-live="polite">
         <span class="phase">{PHASES[view.phase]}</span>
-        <p>
-            {#each rich(view.explain) as part, i (i)}
-                {#if part.kind === 'code'}<code>{part.text}</code>{:else if part.kind === 'bold'}<strong>{part.text}</strong>{:else if part.kind === 'br'}<br />{:else}{part.text}{/if}
-            {/each}
-        </p>
+        <p><Rich text={view.explain} /></p>
     </div>
 
     <svg
@@ -215,14 +196,6 @@
     .done .phase {
         background: var(--found-soft);
         color: var(--found);
-    }
-
-    .explain code {
-        padding: 0 4px;
-        border-radius: 4px;
-        background: var(--surface);
-        font-family: var(--font-mono);
-        font-size: 0.875em;
     }
 
     svg {

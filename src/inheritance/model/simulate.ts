@@ -19,7 +19,7 @@ import { type MainFile, type Selection, mainFile, objectData, printsResult, targ
 
 // Runs a selection (static type, dynamic type, method or cast) and records an immutable snapshot
 // at every step: first what the compiler checks, then what the JVM does. Like the HashMap
-// animation it follows the Java code in java/inheritance by hand; the golden test (java.test.ts)
+// animation it follows the Java code in code/inheritance by hand; the golden test (java.test.ts)
 // checks that javac and java print exactly what the console shows.
 
 export type Phase = 'compile' | 'run' | 'error' | 'exception' | 'done';
@@ -230,7 +230,7 @@ export function simulate(selection: Selection): Trace {
         return finish('compile-error', { compileError: { line, message } });
     }
 
-    // ---- Method bodies, as in java/inheritance ----
+    // ---- Method bodies, as in code/inheritance ----
 
     const returns = (body: Body, label: string, value: string, explain: string) => {
         body.at(label);

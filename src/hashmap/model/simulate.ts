@@ -1,20 +1,20 @@
-import mapRaw from '../../../java/hashmap/HashMap.java?raw';
-import objectRaw from '../../../java/hashmap/Object.java?raw';
+import mapRaw from '../../../code/hashmap/HashMap.java?raw';
+import objectRaw from '../../../code/hashmap/Object.java?raw';
 import { identityHash, identityText, listIndex, nextInt, seeded, step71, stringHashCode } from './javaInt.ts';
-import { type JavaFile, lineOf, parseJava } from '../../lib/lines.ts';
+import { type SourceFile, lineOf, parseSource } from '../../lib/lines.ts';
 import type { BaseStep, Frame as BaseFrame, Var } from '../../lib/trace.ts';
 import { BOOKS, type BookData, type BookId, type KeyRef, MAP_NAME, type MainFile, type Scenario, mainFile } from './scenarios.ts';
 import type { Variant } from './variants.ts';
 
-// Runs a scenario with a Book variant through the simplified HashMap (java/HashMap.java) and
+// Runs a scenario with a Book variant through the simplified HashMap (code/hashmap/HashMap.java) and
 // records an immutable snapshot at every step. This follows the Java code by hand rather than
 // interpreting it; the golden test (java.test.ts) checks that the console output matches what
 // the real Java prints.
 
 export type FileId = 'main' | 'map' | 'book' | 'object';
 
-export const MAP_FILE = parseJava(mapRaw);
-export const OBJECT_FILE = parseJava(objectRaw);
+export const MAP_FILE = parseSource(mapRaw);
+export const OBJECT_FILE = parseSource(objectRaw);
 /** The number of lists in the map, as in `new ArrayList[8]`. */
 export const LISTS = 8;
 
@@ -114,7 +114,7 @@ const FIELDS = ['isbn', 'title', 'author'] as const;
 
 export function simulate(variant: Variant, scenario: Scenario, seed: number): Trace {
     const main = mainFile(scenario);
-    const files: Record<Exclude<FileId, 'main'>, JavaFile> = { map: MAP_FILE, book: variant.file, object: OBJECT_FILE };
+    const files: Record<Exclude<FileId, 'main'>, SourceFile> = { map: MAP_FILE, book: variant.file, object: OBJECT_FILE };
     const identities = seeded(seed);
     const randoms = seeded(seed ^ 0x5bd1e995);
 

@@ -1,17 +1,19 @@
-// The Java files mark the lines the simulation stops on with an end-of-line comment, e.g.
+// The code students see marks the lines the simulation stops on with an end-of-line comment, e.g.
 //     int hash = key.hashCode(); // @put.hash
-// The markers are removed from the code students see.
+//     git commit -m "A" # @a
+// The markers are removed from the code shown.
 
-export interface JavaFile {
+export interface SourceFile {
     /** The code as shown: without the markers. */
     readonly text: string;
     /** Marker name to 1-based line number. */
     readonly labels: ReadonlyMap<string, number>;
 }
 
-const MARKER = /\s*\/\/ @([\w.-]+)\s*$/;
+/** A Java (`// @name`) or shell (`# @name`) marker at the end of a line. */
+const MARKER = /\s*(?:\/\/|#) @([\w.-]+)\s*$/;
 
-export function parseJava(raw: string): JavaFile {
+export function parseSource(raw: string): SourceFile {
     const labels = new Map<string, number>();
     const lines = raw.replace(/\s+$/, '').split('\n').map((line, i) => {
         const match = MARKER.exec(line);
@@ -23,7 +25,7 @@ export function parseJava(raw: string): JavaFile {
     return { text: lines.join('\n'), labels };
 }
 
-export function lineOf(file: JavaFile, label: string): number {
+export function lineOf(file: SourceFile, label: string): number {
     const line = file.labels.get(label);
     if (line === undefined) throw new Error(`No marker @${label}`);
     return line;

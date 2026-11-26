@@ -1,15 +1,15 @@
-import bicycleRaw from '../../../java/inheritance/Bicycle.java?raw';
-import carRaw from '../../../java/inheritance/Car.java?raw';
-import electricEngineRaw from '../../../java/inheritance/ElectricEngine.java?raw';
-import engineRaw from '../../../java/inheritance/Engine.java?raw';
-import motorcycleRaw from '../../../java/inheritance/Motorcycle.java?raw';
-import motorizedVehicleRaw from '../../../java/inheritance/MotorizedVehicle.java?raw';
-import moveableRaw from '../../../java/inheritance/Moveable.java?raw';
-import objectRaw from '../../../java/inheritance/Object.java?raw';
-import partRaw from '../../../java/inheritance/Part.java?raw';
-import startableRaw from '../../../java/inheritance/Startable.java?raw';
-import vehicleRaw from '../../../java/inheritance/Vehicle.java?raw';
-import { type JavaFile, parseJava } from '../../lib/lines.ts';
+import bicycleRaw from '../../../code/inheritance/Bicycle.java?raw';
+import carRaw from '../../../code/inheritance/Car.java?raw';
+import electricEngineRaw from '../../../code/inheritance/ElectricEngine.java?raw';
+import engineRaw from '../../../code/inheritance/Engine.java?raw';
+import motorcycleRaw from '../../../code/inheritance/Motorcycle.java?raw';
+import motorizedVehicleRaw from '../../../code/inheritance/MotorizedVehicle.java?raw';
+import moveableRaw from '../../../code/inheritance/Moveable.java?raw';
+import objectRaw from '../../../code/inheritance/Object.java?raw';
+import partRaw from '../../../code/inheritance/Part.java?raw';
+import startableRaw from '../../../code/inheritance/Startable.java?raw';
+import vehicleRaw from '../../../code/inheritance/Vehicle.java?raw';
+import { type SourceFile, parseSource } from '../../lib/lines.ts';
 
 // The two class hierarchies of the lesson (the CarFactory example) and the rules the compiler
 // and the JVM follow: which types an object has, where the compiler finds a method, where the
@@ -38,7 +38,7 @@ export interface TypeInfo {
     /** Top left corner in the diagram (viewBox 900 × 600). */
     readonly x: number;
     readonly y: number;
-    readonly file: JavaFile;
+    readonly file: SourceFile;
 }
 
 export interface Example {
@@ -66,7 +66,7 @@ const type = (
     methods: Method[],
     parent?: string,
     interfaces: string[] = [],
-): TypeInfo => ({ name, kind, parent, interfaces, methods, x, y, file: parseJava(raw) });
+): TypeInfo => ({ name, kind, parent, interfaces, methods, x, y, file: parseSource(raw) });
 
 const object = () => type('Object', 'class', objectRaw, 325, 24, [method('+', 'toString', 'String'), method('+', 'hashCode', 'int')]);
 
