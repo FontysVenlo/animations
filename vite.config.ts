@@ -17,11 +17,12 @@ export default defineConfig({
                 index: page('index.html'),
                 hashmap: page('hashmap/index.html'),
                 inheritance: page('inheritance/index.html'),
+                'git-graph': page('git-graph/index.html'),
             },
         },
     },
     test: {
-        // The golden tests compile and run the Java files, which takes a few seconds.
+        // The golden tests compile and run the Java files and the git commands, which takes a few seconds.
         testTimeout: 120_000,
     },
 });

@@ -44,7 +44,8 @@
 
     // Keep the URL shareable.
     $effect(() => {
-        if (url !== location.search) history.replaceState(history.state, '', url);
+        // An empty query would keep the current one: give the path instead.
+        if (url !== location.search) history.replaceState(history.state, '', url || location.pathname);
     });
 
     /** Reporting a problem links to the page as it is now, step included. */

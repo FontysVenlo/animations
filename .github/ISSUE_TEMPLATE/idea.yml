@@ -25,6 +25,7 @@ body:
       options:
         - HashMap
         - Inheritance
+        - Git graph
         - The index page
         - Not about an existing animation
 

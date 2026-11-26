@@ -8,6 +8,7 @@ Step-by-step animations for programming lessons. Each one lets you step through 
 |---|---|---|
 | [HashMap Visualiser](https://fontysvenlo.github.io/animations/hashmap/) | Java, MOOC part 8: hash maps | When `hashCode` and `equals` are called, for seven `Book` implementations |
 | [Inheritance Visualiser](https://fontysvenlo.github.io/animations/inheritance/) | Java, MOOC part 9: inheritance and interfaces | Which method is executed: what the compiler checks with the static type, and how Java finds the method from the dynamic type |
+| [Git Graph Visualiser](https://fontysvenlo.github.io/animations/git-graph/) | Git: version control | A git session as a graph: commits are vertices, parents are edges, branches are labels |
 
 ## Using the animations
 
@@ -18,10 +19,11 @@ Step-by-step animations for programming lessons. Each one lets you step through 
 | Home / End | First / last step |
 | Space | Play or pause |
 | Esc | Restore a maximised card, or leave full screen |
+| P | Predict first on or off (Git Graph) |
 
 - **Sharing:** the address bar always holds what you chose and the step you are at. Copy it to share exactly what you see, e.g. [`…/inheritance/?example=vehicles&static=Vehicle&dynamic=Car&method=move&step=10`](https://fontysvenlo.github.io/animations/inheritance/?example=vehicles&static=Vehicle&dynamic=Car&method=move&step=10).
 - **Projector:** maximise a card to fill the window with larger text, or use full screen.
-- **Step into:** each animation can hide its detail steps (the lines inside `hashCode` and `equals`, or each class the method lookup checks), so a call shows as one step.
+- **Step into:** HashMap and Inheritance can hide their detail steps (the lines inside `hashCode` and `equals`, or each class the method lookup checks), so a call shows as one step.
 - **Light and dark:** follows your system setting.
 
 ### HashMap Visualiser
@@ -55,6 +57,19 @@ Or pick one of the scenarios. Stepping through `Main.java` and the classes, you 
 2. **Runtime:** how Java looks for the method's code from the dynamic type upwards. A call on `this` starts again at the dynamic type, and `super` starts at the superclass. A cast is checked against the dynamic type and can throw a `ClassCastException`.
 
 The Lookups tab lists every call with its static type, where it was declared, where the lookup started and which code ran.
+
+### Git Graph Visualiser
+
+A replay of 13 git commands in an empty repository: commits on `main`, a branch `feat1`, a merge, an amended commit, then `git log`, `git reflog` and `git fsck`. For each command you see:
+- the line in `gitexperiment.sh`;
+- what git does, and the same in graph terms;
+- the commit graph, where each commit is a vertex and each parent an edge, and the branches and HEAD are labels;
+- what git prints in the Terminal tab;
+- |V|, |E|, the roots, merges, forks and unreachable commits, and the adjacency list, in the Graph tab.
+
+Click a commit to see everything it can reach: exactly what `git log` prints for it.
+
+With **Predict first** (or P), each command first runs without showing what it does: the graph and the terminal still show the repository before it, so you can predict the result and check it with →.
 
 ## Report a problem or suggest an idea
 
@@ -91,10 +106,11 @@ UI renders steps[i]  ·  → = i + 1  ·  ← = i − 1
 
 - **Real code:** the code students see is real code in [`code/`](code/). Lines the simulation stops on end with a marker such as `// @put.hash`. The marker is removed from the code shown ([`src/lib/lines.ts`](src/lib/lines.ts)).
 - **Simulation:** each animation's `simulate()` follows that code by hand and records a snapshot at every step. The current file and line, the call stack, the console and everything the visual needs are in that snapshot. Stepping backwards is just showing an earlier snapshot.
-- **Golden tests:** each animation has a `java.test.ts` that compiles and runs the real Java with `javac` and `java`, and checks that it prints exactly what the animation's console shows.
-  - For HashMap, it runs every `Book` × scenario.
-  - For Inheritance, it covers all 592 combinations, including javac's compile errors and the JVM's `ClassCastException` messages.
-  - The tests are skipped when there is no JDK.
+- **Golden tests:** each animation has a test that runs the real code and checks that it prints exactly what the animation shows.
+  - For HashMap (`java.test.ts`), it compiles and runs every `Book` × scenario with `javac` and `java`.
+  - For Inheritance (`java.test.ts`), it covers all 592 combinations, including javac's compile errors and the JVM's `ClassCastException` messages.
+  - For Git Graph (`git.test.ts`), it runs the commands with `git`, with a fixed author and dates so the hashes are the same every time. After every command it checks the output, the branches, HEAD, and each commit's hash and parents.
+  - The tests are skipped when there is no JDK or no git.
 
 ```
 src/
@@ -103,13 +119,14 @@ src/
   index/          the index page
   hashmap/        App, components, session, url, model/ (simulate, scenarios, tests)
   inheritance/    App, components, session, url, model/ (hierarchy, scenarios, simulate, tests)
-code/hashmap/, code/inheritance/   the code students see
-index.html, hashmap/index.html, inheritance/index.html   one page per animation
+  git-graph/      App, components, session, url, model/ (history, graph, simulate, tests)
+code/hashmap/, code/inheritance/, code/git-graph/   the code students see
+index.html, hashmap/index.html, …   one page per animation
 ```
 
 ## Development
 
-You need Node 22.12 or newer (`.nvmrc` pins the major version) and a JDK (17 or newer) for the golden tests.
+You need Node 22.12 or newer (`.nvmrc` pins the major version). The golden tests need a JDK (17 or newer) and git.
 
 ```sh
 npm install
@@ -130,7 +147,7 @@ npm run preview    # serve the built site
    - write a `Session` that extends `StepSession`;
    - write an `App.svelte` that fills the `Shell`'s snippets (controls, code, visual, lower tabs);
    - write a `main.ts`.
-   The two existing animations show the pattern.
+   The existing animations show the pattern.
 5. Add a `model.test.ts` and a golden `java.test.ts`.
 
 Animations that don't step through Java can share the shell too, or use their own page. Anything listed in `animations.ts` appears on the index.

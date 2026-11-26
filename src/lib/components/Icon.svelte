@@ -17,6 +17,7 @@
         | 'next-call'
         | 'shuffle'
         | 'hierarchy'
+        | 'git'
         | 'report'
         | 'code';
 </script>
@@ -71,6 +72,9 @@
     {:else if name === 'hierarchy'}
         <rect x="8.5" y="3" width="7" height="5" rx="1" /><rect x="3" y="16" width="7" height="5" rx="1" /><rect x="14" y="16" width="7" height="5" rx="1" />
         <path d="M12 8v4M6.5 16v-4h11v4" />
+    {:else if name === 'git'}
+        <circle cx="5" cy="12" r="2.5" /><circle cx="12" cy="5.5" r="2.5" /><circle cx="19" cy="12" r="2.5" /><circle cx="12" cy="18.5" r="2.5" />
+        <path d="M6.8 10.2 10.2 7.3M13.8 7.3 17.2 10.2M6.8 13.8 10.2 16.7M13.8 16.7 17.2 13.8" />
     {:else if name === 'report'}
         <path d="M20 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z" /><path d="M12 7v4M12 14.5v.01" />
     {:else if name === 'code'}

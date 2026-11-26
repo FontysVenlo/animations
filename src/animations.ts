@@ -37,6 +37,15 @@ export const ANIMATIONS: readonly Animation[] = [
             'Which method is executed? See what the compiler checks with the static type, and how Java looks up the method from the dynamic type at runtime.',
         icon: 'hierarchy',
     },
+    {
+        id: 'git-graph',
+        title: 'Git Graph Visualiser',
+        name: 'Git graph',
+        topic: 'Git · commits, branches and merges as a graph',
+        description:
+            'Replay a git session: every commit becomes a vertex and every parent an edge. Branches are labels, a merge has two parents, and an amended commit stays behind, unreachable.',
+        icon: 'git',
+    },
 ];
 
 export const findAnimation = (id: string): Animation => {

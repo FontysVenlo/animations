@@ -16,6 +16,7 @@ body:
       options:
         - HashMap
         - Inheritance
+        - Git graph
         - The index page
         - Something else
     validations:
