@@ -1,9 +1,20 @@
 <script lang="ts">
-    import type { Frame, Step, Var } from '../../hashmap/model/index.ts';
+    import type { BaseStep, Frame, Var } from '../trace.ts';
 
-    let { step, previous }: { step: Step; previous: Step | undefined } = $props();
+    let {
+        step,
+        previous,
+        classOf,
+        colourOf,
+    }: {
+        step: BaseStep;
+        previous: BaseStep | undefined;
+        /** The class a frame's method belongs to, e.g. HashMap. */
+        classOf: (frame: Frame) => string;
+        /** Colour of a variable that refers to an object. */
+        colourOf?: (v: Var) => string | undefined;
+    } = $props();
 
-    const FILES = { main: 'Main', map: 'HashMap', book: 'Book', object: 'Object' } as const;
     const frames = $derived([...step.frames].reverse());
 
     /** Variables of the top frame that are new or changed since the previous step. */
@@ -13,8 +24,6 @@
         if (!before) return new Set<string>();
         return new Set(top.vars.filter((v) => before.vars.find((b) => b.name === v.name)?.text !== v.text).map((v) => v.name));
     });
-
-    const colourOf = (v: Var) => (v.object === undefined ? undefined : `var(--object-${step.objects[v.object].group % 6})`);
 </script>
 
 {#snippet vars(frame: Frame, showChanges: boolean)}
@@ -24,7 +33,7 @@
                 {#each frame.vars as v (v.name)}
                     <tr class:changed={showChanges && changed.has(v.name)}>
                         <th scope="row">{v.name}</th>
-                        <td style:color={colourOf(v)} class:ref={v.object !== undefined}>{v.text}</td>
+                        <td style:color={colourOf?.(v)} class:ref={v.object !== undefined}>{v.text}</td>
                     </tr>
                 {/each}
             </tbody>
@@ -37,14 +46,14 @@
         <li class="frame" class:current={i === 0}>
             {#if i === 0}
                 <div class="head">
-                    <code class="call">{FILES[frame.file]}.{frame.label}</code>
+                    <code class="call">{classOf(frame)}.{frame.label}</code>
                     <span class="line">line {frame.line}</span>
                 </div>
                 {@render vars(frame, true)}
             {:else}
                 <details>
                     <summary class="head">
-                        <code class="call">{FILES[frame.file]}.{frame.label}</code>
+                        <code class="call">{classOf(frame)}.{frame.label}</code>
                         <span class="line">line {frame.line}</span>
                     </summary>
                     {@render vars(frame, false)}

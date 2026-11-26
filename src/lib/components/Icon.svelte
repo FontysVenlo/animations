@@ -15,7 +15,10 @@
         | 'expand'
         | 'prev-call'
         | 'next-call'
-        | 'shuffle';
+        | 'shuffle'
+        | 'hierarchy'
+        | 'report'
+        | 'code';
 </script>
 
 <script lang="ts">
@@ -65,5 +68,12 @@
         <path d="m6 9 6 6 6-6" />
     {:else if name === 'exit-fullscreen'}
         <path d="M4 8h4V4M20 8h-4V4M8 20v-4H4M16 20v-4h4" />
+    {:else if name === 'hierarchy'}
+        <rect x="8.5" y="3" width="7" height="5" rx="1" /><rect x="3" y="16" width="7" height="5" rx="1" /><rect x="14" y="16" width="7" height="5" rx="1" />
+        <path d="M12 8v4M6.5 16v-4h11v4" />
+    {:else if name === 'report'}
+        <path d="M20 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z" /><path d="M12 7v4M12 14.5v.01" />
+    {:else if name === 'code'}
+        <path d="m16 18 6-6-6-6M8 6l-6 6 6 6" />
     {/if}
 </svg>

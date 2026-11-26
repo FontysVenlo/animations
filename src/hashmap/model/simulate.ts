@@ -2,6 +2,7 @@ import mapRaw from '../../../java/hashmap/HashMap.java?raw';
 import objectRaw from '../../../java/hashmap/Object.java?raw';
 import { identityHash, identityText, listIndex, nextInt, seeded, step71, stringHashCode } from './javaInt.ts';
 import { type JavaFile, lineOf, parseJava } from '../../lib/lines.ts';
+import type { BaseStep, Frame as BaseFrame, Var } from '../../lib/trace.ts';
 import { BOOKS, type BookData, type BookId, type KeyRef, MAP_NAME, type MainFile, type Scenario, mainFile } from './scenarios.ts';
 import type { Variant } from './variants.ts';
 
@@ -56,51 +57,25 @@ export interface Focus {
     readonly other?: number;
 }
 
-export interface Var {
-    readonly name: string;
-    readonly text: string;
-    /** The BookObject it refers to. */
-    readonly object?: number;
-}
+/** A variable; `object` is the BookObject it refers to. */
+export type { Var } from '../../lib/trace.ts';
 
-export interface Frame {
-    readonly id: number;
-    readonly file: FileId;
-    /** e.g. put(got, 1) or got2.equals(got). */
-    readonly label: string;
-    readonly line: number;
-    readonly vars: readonly Var[];
-}
+/** e.g. put(got, 1) or got2.equals(got). */
+export type Frame = BaseFrame<FileId>;
 
 export interface Counters {
     readonly hashCode: number;
     readonly equals: number;
 }
 
-export interface Step {
-    /** Position in the full trace (with the steps inside hashCode and equals). */
-    readonly seq: number;
-    readonly file: FileId;
-    readonly line: number;
-    /** Shown at the end of the current line. */
-    readonly note?: string;
-    /** Bottom (main) to top (the running method). */
-    readonly frames: readonly Frame[];
+/** `inside`: inside Book's or Object's hashCode/equals, hidden when not stepping into them. */
+export interface Step extends BaseStep<FileId> {
     readonly objects: readonly BookObject[];
     /** The map's lists, once the map exists. */
     readonly table?: readonly (readonly Pair[])[];
     readonly size: number;
     readonly focus: Focus;
-    /** Everything printed so far. */
-    readonly console: readonly string[];
     readonly counters: Counters;
-    /** The map call (if any), then what this step does. */
-    readonly narration: readonly string[];
-    /** Inside Book's or Object's hashCode/equals: hidden when not stepping into them. */
-    readonly inside: boolean;
-    /** Index into Trace.calls. */
-    readonly call?: number;
-    readonly done: boolean;
 }
 
 export interface CallSummary {

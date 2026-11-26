@@ -1,10 +1,17 @@
 <script lang="ts">
-    import { SPEEDS, type Session } from '../../hashmap/session.svelte.ts';
+    import { SPEEDS, type StepSession } from '../session.svelte.ts';
     import Icon from './Icon.svelte';
 
-    let { session, narration }: { session: Session; narration: string[] } = $props();
-
-    const disabled = false;
+    let {
+        session,
+        narration,
+        callWord,
+    }: {
+        session: StepSession;
+        narration: string[];
+        /** What ↑ and ↓ jump between, e.g. "map call". */
+        callWord: string;
+    } = $props();
     const atStart = $derived(session.index === 0);
     const atEnd = $derived(session.index >= session.lastIndex);
 </script>
@@ -19,31 +26,30 @@
 
         <div class="row">
             <div class="transport">
-                <button class="icon-button" onclick={session.first} disabled={disabled || atStart} title="First step (Home)" aria-label="First step">
+                <button class="icon-button" onclick={session.first} disabled={atStart} title="First step (Home)" aria-label="First step">
                     <Icon name="first" />
                 </button>
-                <button class="icon-button" onclick={session.prevCall} disabled={disabled || atStart} title="Previous map call (↑ or W)" aria-label="Previous map call">
+                <button class="icon-button" onclick={session.prevCall} disabled={atStart} title="Previous {callWord} (↑ or W)" aria-label="Previous {callWord}">
                     <Icon name="prev-call" />
                 </button>
-                <button class="icon-button" onclick={session.prev} disabled={disabled || atStart} title="Previous step (← or A)" aria-label="Previous step">
+                <button class="icon-button" onclick={session.prev} disabled={atStart} title="Previous step (← or A)" aria-label="Previous step">
                     <Icon name="prev" />
                 </button>
                 <button
                     class="icon-button play"
                     onclick={session.togglePlay}
-                    {disabled}
                     title={session.playing ? 'Pause (Space)' : 'Play (Space)'}
                     aria-label={session.playing ? 'Pause' : 'Play'}
                 >
                     <Icon name={session.playing ? 'pause' : 'play'} />
                 </button>
-                <button class="icon-button" onclick={session.next} disabled={disabled || atEnd} title="Next step (→ or D)" aria-label="Next step">
+                <button class="icon-button" onclick={session.next} disabled={atEnd} title="Next step (→ or D)" aria-label="Next step">
                     <Icon name="next" />
                 </button>
-                <button class="icon-button" onclick={session.nextCall} disabled={disabled || atEnd} title="Next map call (↓ or S)" aria-label="Next map call">
+                <button class="icon-button" onclick={session.nextCall} disabled={atEnd} title="Next {callWord} (↓ or S)" aria-label="Next {callWord}">
                     <Icon name="next-call" />
                 </button>
-                <button class="icon-button" onclick={session.last} disabled={disabled || atEnd} title="Last step (End)" aria-label="Last step">
+                <button class="icon-button" onclick={session.last} disabled={atEnd} title="Last step (End)" aria-label="Last step">
                     <Icon name="last" />
                 </button>
             </div>
@@ -58,7 +64,6 @@
                     session.playing = false;
                     session.goTo(e.currentTarget.valueAsNumber);
                 }}
-                {disabled}
                 aria-label="Step"
                 aria-valuetext={`Step ${session.index + 1} of ${session.steps.length}`}
             />
@@ -156,15 +161,6 @@
         height: 32px;
         padding: 0 8px;
         font-size: 0.875rem;
-    }
-
-    .visually-hidden {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-        clip-path: inset(50%);
-        white-space: nowrap;
     }
 
     @media (max-width: 700px) {

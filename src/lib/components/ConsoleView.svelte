@@ -1,7 +1,19 @@
 <script lang="ts">
-    import type { Step } from '../../hashmap/model/index.ts';
+    import type { BaseStep } from '../trace.ts';
 
-    let { step, previous }: { step: Step; previous: Step | undefined } = $props();
+    let {
+        step,
+        previous,
+        hint,
+        colourOf,
+    }: {
+        step: BaseStep;
+        previous: BaseStep | undefined;
+        /** Below the output: where the lines come from. */
+        hint: string;
+        /** Colour of a printed line, e.g. to set apart what hashCode prints. */
+        colourOf?: (line: string) => string | undefined;
+    } = $props();
 
     /** Lines printed since the previous step shown (with "step into" off, hashCode's line shows up after it). */
     const fresh = $derived(step.console.length - (previous?.console.length ?? 0));
@@ -21,17 +33,13 @@
     {:else}
         <ol bind:this={box}>
             {#each step.console as line, i (i)}
-                <li
-                    class:fresh={i >= step.console.length - fresh}
-                    class:hashcode={line.startsWith('Calling hashCode')}
-                    class:equals={line.startsWith('Comparing to')}
-                >
+                <li class:fresh={i >= step.console.length - fresh} style:color={colourOf?.(line)}>
                     {line}
                 </li>
             {/each}
         </ol>
     {/if}
-    <p class="hint">What the program prints, as when you run it. The lines come from the print statements in Book and Main.</p>
+    <p class="hint">{hint}</p>
 </div>
 
 <style>
@@ -53,14 +61,6 @@
         padding: 1px 12px;
         white-space: pre-wrap;
         overflow-wrap: anywhere;
-    }
-
-    li.hashcode {
-        color: var(--syntax-function);
-    }
-
-    li.equals {
-        color: var(--compare);
     }
 
     li.fresh {

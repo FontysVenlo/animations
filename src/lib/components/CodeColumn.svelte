@@ -1,39 +1,22 @@
 <script lang="ts">
-    import { type FileId, MAP_FILE, OBJECT_FILE, type Step, type Trace, type Variant, usesObject } from '../../hashmap/model/index.ts';
+    import type { CodeFile } from '../code.ts';
     import type { CodeHighlights } from '../codemirror.ts';
+    import type { BaseStep } from '../trace.ts';
     import CodePanel from './CodePanel.svelte';
 
-    let { step, trace, variant }: { step: Step; trace: Trace; variant: Variant } = $props();
+    let { step, files }: { step: BaseStep; files: readonly CodeFile[] } = $props();
 
-    interface File {
-        id: FileId;
-        name: string;
-        detail: string;
-        source: string;
-        /** Share of the column's height. */
-        weight: number;
-    }
-
-    const files = $derived<File[]>([
-        { id: 'main', name: 'Main.java', detail: '', source: trace.main.text, weight: 1 },
-        { id: 'map', name: 'HashMap.java', detail: 'simplified', source: MAP_FILE.text, weight: 1.15 },
-        { id: 'book', name: 'Book.java', detail: variant.title, source: variant.file.text, weight: 1.5 },
-        ...(usesObject(variant)
-            ? [{ id: 'object' as const, name: 'Object.java', detail: 'from the JDK, shortened', source: OBJECT_FILE.text, weight: 0.6 }]
-            : []),
-    ]);
-
-    function highlightsFor(file: FileId): CodeHighlights | null {
+    function highlightsFor(file: string): CodeHighlights | null {
         const callers = step.frames
             .slice(0, -1)
             .filter((f) => f.file === file)
             .map((f) => f.line);
         const current = step.file === file ? step.line : 0;
         if (!current && callers.length === 0) return null;
-        return { current, callers, note: current ? step.note : undefined };
+        return { current, callers, note: current ? step.note : undefined, error: current ? step.error : undefined };
     }
 
-    const state = (file: FileId) => (step.file === file ? 'running' : step.frames.some((f) => f.file === file) ? 'waiting' : '');
+    const state = (file: string) => (step.file === file ? 'running' : step.frames.some((f) => f.file === file) ? 'waiting' : '');
 </script>
 
 <div class="files">
