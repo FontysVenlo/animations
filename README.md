@@ -154,8 +154,8 @@ Animations that don't step through Java can share the shell too, or use their ow
 
 ## Contributing
 
-Pull requests are welcome.
-- Commit messages and pull request titles follow [Conventional Commits](https://www.conventionalcommits.org) (`feat:`, `fix:`, `docs:`, …).
+Pull requests are welcome. `main` is protected: every change goes through a pull request, which is squash-merged.
+- The pull request title becomes the commit on `main`, so it follows [Conventional Commits](https://www.conventionalcommits.org) (`feat:`, `fix:`, `docs:`, …). A [check](.github/workflows/pr-title.yml) enforces this.
 - [CI](.github/workflows/ci.yml) runs the tests and the build on every pull request, and they must pass.
 - Dependabot keeps the dependencies and actions up to date.
 

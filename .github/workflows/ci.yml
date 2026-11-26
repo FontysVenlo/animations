@@ -15,6 +15,8 @@ concurrency:
 
 jobs:
   check:
+    # A required check for main (see the ruleset): keep the name.
+    name: build & test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -26,7 +28,7 @@ jobs:
 
       - run: npm ci
 
-      # The runner's preinstalled JDK runs the golden tests (src/*/model/java.test.ts).
+      # The runner's preinstalled JDK and git run the golden tests (java.test.ts, git.test.ts).
       - name: Test
         run: npm test
 
