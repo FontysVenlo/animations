@@ -60,7 +60,7 @@ The Lookups tab lists every call with its static type, where it was declared, wh
 
 ### Git Graph Visualiser
 
-A replay of 13 git commands in an empty repository: commits on `main`, a branch `feat1`, a merge, an amended commit, then `git log`, `git reflog` and `git fsck`. For each command you see:
+A replay of 14 git commands in an empty repository: commits on `main`, a branch `feat1` (`git branch`, then `git switch`), a merge, an amended commit, then `git log`, `git reflog` and `git fsck`. For each command you see:
 - the line in `gitexperiment.sh`;
 - what git does, and the same in graph terms;
 - the commit graph, where each commit is a vertex and each parent an edge, and the branches and HEAD are labels;

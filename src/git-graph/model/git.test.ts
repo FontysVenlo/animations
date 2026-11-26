@@ -53,6 +53,7 @@ const PROGRESS = /^[A-Z][a-z ]+: +\d+% \(\d+\/\d+\), done\.$/;
 
 /** Each line as it ends up on the screen: after a carriage return, the rest overwrites it. */
 function lines(output: string, home: string): string[] {
+    if (output === '') return [];
     return output
         .replace(/\n$/, '')
         .split('\n')

@@ -97,37 +97,46 @@ export const COMMANDS: readonly Command[] = [
     },
     {
         marker: 'branch',
-        output: ["Switched to a new branch 'feat1'"],
+        output: [],
         title: 'A branch is only a label',
-        git: 'Creating `feat1` copies nothing. It is a second name for commit B. HEAD now points at `feat1`, so the next commit will move `feat1`.',
+        git: '`git branch feat1` creates `feat1` and copies nothing: it is a second name for commit B. It prints nothing, and HEAD still names `main`.',
         theory: 'V and E are unchanged. Branches are not part of the graph. They are named entry points into it.',
         refs: { feat1: 'B' },
+    },
+    {
+        marker: 'switch',
+        output: ["Switched to branch 'feat1'"],
+        title: 'Switching to the branch',
+        git:
+            '`git switch feat1` makes HEAD name `feat1`, so the next commit will move `feat1` and not `main`. Both still point at B. ' +
+            '(`git switch -c feat1`, or the older `git checkout -b feat1`, creates the branch and switches to it in one command.)',
+        theory: 'Nothing changes in the graph. HEAD only says which label the next commit moves.',
         head: 'feat1',
     },
     {
         marker: 'c',
-        output: ['[feat1 a2861c9] C'],
+        output: ['[feat1 d66e384] C'],
         title: 'Committing on the branch',
         git: 'C gets parent B. Only `feat1` moves; `main` still points at B.',
         theory: 'New edge C → B. The graph is still a simple path: A ← B ← C.',
-        add: commit('C', 'a2861c9', ['B'], 'feat', 2, 1),
+        add: commit('C', 'd66e384', ['B'], 'feat', 2, 1),
         refs: { feat1: 'C' },
     },
     {
-        marker: 'checkout',
+        marker: 'back',
         output: ["Switched to branch 'main'"],
         title: 'Switching back',
-        git: "HEAD moves back to `main`. C still exists, it just isn't in main's history.",
+        git: "`git switch main` makes HEAD name `main` again. C still exists, it just isn't in main's history.",
         theory: 'Nothing changes in the graph. Starting from `main` you can reach {B, A}. Starting from `feat1` you can reach {C, B, A}.',
         head: 'main',
     },
     {
         marker: 'd',
-        output: ['[main 3c73ac8] D'],
+        output: ['[main f9ae3fa] D'],
         title: 'History diverges',
         git: 'D is committed on `main` with parent B. Now `main` and `feat1` each have a commit the other lacks.',
         theory: 'B now has in-degree 2: two commits name it as parent. That makes B a **fork point**. Up to here the graph is still a tree.',
-        add: commit('D', '3c73ac8', ['B'], 'main', 3),
+        add: commit('D', 'f9ae3fa', ['B'], 'main', 3),
         refs: { main: 'D' },
     },
     {
@@ -140,23 +149,23 @@ export const COMMANDS: readonly Command[] = [
         theory:
             'M has out-degree 2. There are now two different paths from M to B (via D and via C), so the graph is no longer a tree. ' +
             'Yet following the arrows you can never return to where you started. That makes it a **directed acyclic graph**.',
-        add: commit('M', 'db4f257', ['D', 'C'], 'main', 4, 0, "Merge branch 'feat1'"),
+        add: commit('M', '8cbf09b', ['D', 'C'], 'main', 4, 0, "Merge branch 'feat1'"),
         refs: { main: 'M' },
     },
     {
         marker: 'e',
-        output: ['[main 2966420] E'],
+        output: ['[main 5e92f48] E'],
         title: 'Why cycles are impossible',
         git: 'Another ordinary commit on `main`.',
         theory:
             "A commit's hash is computed over its content, *including its parents' hashes*. So a commit can only point at commits that already exist. " +
             'You cannot draw an edge to the future, and therefore you can never close a cycle.',
-        add: commit('E', '2966420', ['M'], 'main', 5),
+        add: commit('E', '5e92f48', ['M'], 'main', 5),
         refs: { main: 'E' },
     },
     {
         marker: 'amend',
-        output: ['[main 79295b0] EE', ' Date: Fri Nov 21 10:48:00 2025 +0100'],
+        output: ['[main d533535] EE', ' Date: Fri Nov 21 10:49:00 2025 +0100'],
         title: 'Amend makes a new vertex',
         git:
             'Commits are immutable, so `--amend` cannot edit E. It creates a new commit EE with the same parent (M) and moves `main` to it. E is left behind. ' +
@@ -164,18 +173,18 @@ export const COMMANDS: readonly Command[] = [
         theory:
             "E is still a vertex in the object store, and its edge E → M still exists too, because E itself stores its parent's hash. " +
             'But no branch can reach E. It is **unreachable**, so `git log` will not show it. Garbage collection eventually deletes unreachable vertices.',
-        add: commit('EE', '79295b0', ['M'], 'main', 5),
+        add: commit('EE', 'd533535', ['M'], 'main', 5),
         refs: { main: 'EE' },
         lanes: { E: 1 },
     },
     {
         marker: 'log',
         output: [
-            '* 79295b0 (HEAD -> main) EE',
-            "*   db4f257 Merge branch 'feat1'",
+            '* d533535 (HEAD -> main) EE',
+            "*   8cbf09b Merge branch 'feat1'",
             '|\\  ',
-            '| * a2861c9 (feat1) C',
-            '* | 3c73ac8 D',
+            '| * d66e384 (feat1) C',
+            '* | f9ae3fa D',
             '|/  ',
             '* db350be B',
             '* ed8a842 A',
@@ -189,18 +198,20 @@ export const COMMANDS: readonly Command[] = [
     {
         marker: 'reflog',
         output: [
-            '79295b0 (HEAD -> main) HEAD@{0}: commit (amend): EE',
-            '2966420 HEAD@{1}: commit: E',
-            "db4f257 HEAD@{2}: merge feat1: Merge made by the 'ort' strategy.",
-            '3c73ac8 HEAD@{3}: commit: D',
+            'd533535 (HEAD -> main) HEAD@{0}: commit (amend): EE',
+            '5e92f48 HEAD@{1}: commit: E',
+            "8cbf09b HEAD@{2}: merge feat1: Merge made by the 'ort' strategy.",
+            'f9ae3fa HEAD@{3}: commit: D',
             'db350be HEAD@{4}: checkout: moving from feat1 to main',
-            'a2861c9 (feat1) HEAD@{5}: commit: C',
+            'd66e384 (feat1) HEAD@{5}: commit: C',
             'db350be HEAD@{6}: checkout: moving from main to feat1',
             'db350be HEAD@{7}: commit: B',
             'ed8a842 HEAD@{8}: commit (initial): A',
         ],
         title: 'The reflog still knows E',
-        git: 'The reflog lists every commit HEAD has pointed at. It still mentions `2966420`, so you can get E back with `git branch rescue 2966420`.',
+        git:
+            'The reflog lists every commit HEAD has pointed at. It still mentions `5e92f48`, so you can get E back with `git branch rescue 5e92f48`. ' +
+            'A `git switch` shows up as `checkout`, the older command that does the same.',
         theory: "The reflog acts as an extra set of starting points for reachability. While E's reflog entry exists (30 days by default for unreachable commits), garbage collection keeps it.",
         focus: ['E'],
         ghostLabel: 'only in reflog',
@@ -211,7 +222,7 @@ export const COMMANDS: readonly Command[] = [
         output: [
             'Checking ref database: 100% (1/1), done.',
             'Checking object directories: 100% (256/256), done.',
-            'unreachable commit 2966420f7847002a61b6e3afde46b132f6e2436f',
+            'unreachable commit 5e92f48ea7e10ebf313385ca631afb67d9379861',
         ],
         title: 'Finding the zombie commits',
         git:

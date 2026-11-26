@@ -37,12 +37,15 @@ describe('the graph', () => {
     });
 
     it('only moves labels when branching and switching', () => {
-        for (const marker of ['branch', 'checkout']) {
+        for (const marker of ['branch', 'switch', 'back']) {
             const i = COMMANDS.findIndex((c) => c.marker === marker);
             expect(STATES[i + 1].commits).toEqual(STATES[i].commits);
         }
         expect(after('branch').refs).toEqual({ main: 'B', feat1: 'B' });
-        expect(after('branch').head).toBe('feat1');
+        expect(after('branch').head).toBe('main');
+        expect(after('switch').refs).toEqual({ main: 'B', feat1: 'B' });
+        expect(after('switch').head).toBe('feat1');
+        expect(after('back').head).toBe('main');
     });
 
     it('keeps E after the amend, unreachable but with its edge', () => {
@@ -114,7 +117,8 @@ describe('the trace', () => {
         const last = steps[steps.length - 1];
         expect(last.console[0]).toBe('~ $ mkdir gitexperiment && cd gitexperiment && git init');
         expect(last.console).toContain('~/gitexperiment (feat1) $ git commit --allow-empty -m "C"');
-        expect(last.console).toContain('~/gitexperiment (feat1) $ git checkout main');
+        expect(last.console).toContain('~/gitexperiment (main) $ git switch feat1');
+        expect(last.console).toContain('~/gitexperiment (feat1) $ git switch main');
     });
 
     it('labels E as unreachable, only in the reflog, then dangling', () => {
@@ -128,7 +132,8 @@ describe('the trace', () => {
     it('notes what changed at the end of the line', () => {
         const note = (marker: string) => steps.find((s) => !s.inside && COMMANDS[s.call!].marker === marker)!.note;
         expect(note('a')).toBe('A ed8a842 · main → A');
-        expect(note('branch')).toBe('feat1 → B · HEAD → feat1');
+        expect(note('branch')).toBe('feat1 → B');
+        expect(note('switch')).toBe('HEAD → feat1');
         expect(note('log')).toBeUndefined();
     });
 });

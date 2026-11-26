@@ -2,9 +2,10 @@
 mkdir gitexperiment && cd gitexperiment && git init # @init
 git commit --allow-empty -m "A" # @a
 git commit --allow-empty -m "B" # @b
-git checkout -b feat1 # @branch
+git branch feat1 # @branch
+git switch feat1 # @switch
 git commit --allow-empty -m "C" # @c
-git checkout main # @checkout
+git switch main # @back
 git commit --allow-empty -m "D" # @d
 git merge feat1 # @merge
 git commit --allow-empty -m "E" # @e
