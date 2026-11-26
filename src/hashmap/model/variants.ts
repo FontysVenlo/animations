@@ -1,11 +1,11 @@
-import author from '../../java/book/author.java?raw';
-import constant from '../../java/book/constant.java?raw';
-import equalsOnly from '../../java/book/equals-only.java?raw';
-import generated from '../../java/book/generated.java?raw';
-import hashcodeOnly from '../../java/book/hashcode-only.java?raw';
-import none from '../../java/book/none.java?raw';
-import random from '../../java/book/random.java?raw';
-import { type JavaFile, parseJava } from './lines.ts';
+import author from '../../../java/hashmap/book/author.java?raw';
+import constant from '../../../java/hashmap/book/constant.java?raw';
+import equalsOnly from '../../../java/hashmap/book/equals-only.java?raw';
+import generated from '../../../java/hashmap/book/generated.java?raw';
+import hashcodeOnly from '../../../java/hashmap/book/hashcode-only.java?raw';
+import none from '../../../java/hashmap/book/none.java?raw';
+import random from '../../../java/hashmap/book/random.java?raw';
+import { type JavaFile, parseJava } from '../../lib/lines.ts';
 
 // The Book implementations students can choose. Each is a real Book.java in java/book/.
 

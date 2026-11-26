@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { LISTS, MAP_NAME, type Outcome, type Step, objectName } from '../../model/index.ts';
+    import { LISTS, MAP_NAME, type Outcome, type Step, objectName } from '../model/index.ts';
 
     let { step }: { step: Step } = $props();
 

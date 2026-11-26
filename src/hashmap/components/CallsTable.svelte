@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Step, Trace } from '../../model/index.ts';
+    import type { Step, Trace } from '../model/index.ts';
 
     let { step, trace, onselect }: { step: Step; trace: Trace; onselect: (call: number) => void } = $props();
 

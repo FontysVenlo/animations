@@ -1,4 +1,4 @@
-import { SCENARIOS, type Step, VARIANTS, findScenario, findVariant, simulate } from '../model/index.ts';
+import { SCENARIOS, type Step, VARIANTS, findScenario, findVariant, simulate } from './model/index.ts';
 import { DEFAULT_SEED, type UrlState } from './url.ts';
 
 export const SPEEDS = [1, 2, 4, 8, 16] as const;

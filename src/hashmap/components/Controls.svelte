@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { SCENARIOS, VARIANTS, usesSeed } from '../../model/index.ts';
+    import { SCENARIOS, VARIANTS, usesSeed } from '../model/index.ts';
     import type { Session } from '../session.svelte.ts';
-    import Icon from './Icon.svelte';
+    import Icon from '../../lib/components/Icon.svelte';
 
     let { session }: { session: Session } = $props();
 </script>

@@ -21,7 +21,7 @@ function hasJavac(): boolean {
     }
 }
 
-const root = new URL('../../java/', import.meta.url).pathname;
+const root = new URL('../../../java/hashmap/', import.meta.url).pathname;
 const dirs: string[] = [];
 
 afterAll(() => {

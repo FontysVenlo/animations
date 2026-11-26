@@ -1,17 +1,17 @@
 <script lang="ts">
     import { MAP_FILE, OBJECT_FILE, usesObject } from './model/index.ts';
-    import CallStack from './lib/components/CallStack.svelte';
-    import CallsTable from './lib/components/CallsTable.svelte';
-    import CodeColumn from './lib/components/CodeColumn.svelte';
-    import ConsoleView from './lib/components/ConsoleView.svelte';
-    import Controls from './lib/components/Controls.svelte';
-    import Icon from './lib/components/Icon.svelte';
-    import ObjectsView from './lib/components/ObjectsView.svelte';
-    import Splitter from './lib/components/Splitter.svelte';
-    import TableView from './lib/components/TableView.svelte';
-    import Timeline from './lib/components/Timeline.svelte';
-    import { type Collapsible, type LowerTab, MAX_COLUMNS, MAX_SPLIT, MIN_COLUMNS, MIN_SPLIT, Session } from './lib/session.svelte.ts';
-    import { parseUrl, urlFor } from './lib/url.ts';
+    import CallStack from '../lib/components/CallStack.svelte';
+    import CallsTable from './components/CallsTable.svelte';
+    import CodeColumn from '../lib/components/CodeColumn.svelte';
+    import ConsoleView from '../lib/components/ConsoleView.svelte';
+    import Controls from './components/Controls.svelte';
+    import Icon from '../lib/components/Icon.svelte';
+    import ObjectsView from './components/ObjectsView.svelte';
+    import Splitter from '../lib/components/Splitter.svelte';
+    import TableView from './components/TableView.svelte';
+    import Timeline from '../lib/components/Timeline.svelte';
+    import { type Collapsible, type LowerTab, MAX_COLUMNS, MAX_SPLIT, MIN_COLUMNS, MIN_SPLIT, Session } from './session.svelte.ts';
+    import { parseUrl, urlFor } from './url.ts';
 
     const session = new Session();
     session.restore(parseUrl(location.search));

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Step } from '../../model/index.ts';
+    import type { Step } from '../../hashmap/model/index.ts';
 
     let { step, previous }: { step: Step; previous: Step | undefined } = $props();
 

@@ -1,7 +1,7 @@
-import mapRaw from '../../java/HashMap.java?raw';
-import objectRaw from '../../java/Object.java?raw';
+import mapRaw from '../../../java/hashmap/HashMap.java?raw';
+import objectRaw from '../../../java/hashmap/Object.java?raw';
 import { identityHash, identityText, listIndex, nextInt, seeded, step71, stringHashCode } from './javaInt.ts';
-import { type JavaFile, lineOf, parseJava } from './lines.ts';
+import { type JavaFile, lineOf, parseJava } from '../../lib/lines.ts';
 import { BOOKS, type BookData, type BookId, type KeyRef, MAP_NAME, type MainFile, type Scenario, mainFile } from './scenarios.ts';
 import type { Variant } from './variants.ts';
 

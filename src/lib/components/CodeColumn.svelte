@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { type FileId, MAP_FILE, OBJECT_FILE, type Step, type Trace, type Variant, usesObject } from '../../model/index.ts';
+    import { type FileId, MAP_FILE, OBJECT_FILE, type Step, type Trace, type Variant, usesObject } from '../../hashmap/model/index.ts';
     import type { CodeHighlights } from '../codemirror.ts';
     import CodePanel from './CodePanel.svelte';
 

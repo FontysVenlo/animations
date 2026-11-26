@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { type Step, identityText } from '../../model/index.ts';
+    import { type Step, identityText } from '../model/index.ts';
 
     let { step }: { step: Step } = $props();
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { SPEEDS, type Session } from '../session.svelte.ts';
+    import { SPEEDS, type Session } from '../../hashmap/session.svelte.ts';
     import Icon from './Icon.svelte';
 
     let { session, narration }: { session: Session; narration: string[] } = $props();
