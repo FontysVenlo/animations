@@ -30,7 +30,7 @@ jobs:
 
       - run: npm ci
 
-      # The runner's preinstalled JDK runs the golden test (src/model/java.test.ts).
+      # The runner's preinstalled JDK runs the golden tests (src/*/model/java.test.ts).
       - name: Test
         run: npm test
 
@@ -38,7 +38,7 @@ jobs:
         id: pages
         uses: actions/configure-pages@v6
 
-      # The site lives under the repository name (e.g. /java-hashmap/); Pages reports the exact path.
+      # The site lives under the repository name (/animations/); Pages reports the exact path.
       - name: Build
         run: npm run build
         env:

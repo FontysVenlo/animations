@@ -1,0 +1,50 @@
+name: "Idea: an improvement or a new animation"
+description: Suggest something that would make an animation clearer, or a topic that deserves an animation of its own.
+type: Feature
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ideas are welcome, from students and teachers. A short description is enough; a sketch helps.
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of idea?
+      options:
+        - An improvement to an existing animation
+        - A new animation
+    validations:
+      required: true
+
+  - type: dropdown
+    id: animation
+    attributes:
+      label: Which animation?
+      description: For an improvement.
+      options:
+        - HashMap
+        - Inheritance
+        - The index page
+        - Not about an existing animation
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea
+      description: What should it show or do? What would it make easier to understand?
+    validations:
+      required: true
+
+  - type: input
+    id: lesson
+    attributes:
+      label: Course or lesson
+      description: Where would it help? e.g. a course name, a MOOC part or a lesson topic.
+      placeholder: e.g. Programming 1, MOOC part 10 (streams)
+
+  - type: textarea
+    id: sketch
+    attributes:
+      label: Sketch or example
+      description: Optional. Code, a drawing or a link to something similar.

@@ -1,0 +1,54 @@
+name: "Bug: something is wrong"
+description: An animation is broken, shows something that real Java doesn't do, or explains something wrong or unclearly.
+type: Bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! The **report button** (💬) in an animation fills in the animation and the link to the step you were looking at.
+
+        Not sure how to do an assignment? That doesn't belong here: ask your teacher.
+
+  - type: dropdown
+    id: animation
+    attributes:
+      label: Animation
+      options:
+        - HashMap
+        - Inheritance
+        - The index page
+        - Something else
+    validations:
+      required: true
+
+  - type: input
+    id: link
+    attributes:
+      label: Link to the step
+      description: Copy the address bar. It holds the scenario and the step, so we see exactly what you see.
+      placeholder: https://fontysvenlo.github.io/animations/inheritance/?example=vehicles&...&step=9
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What's wrong?
+      description: What did you see? If it doesn't match what real Java does, say what Java does instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device
+      placeholder: e.g. Firefox 145 on Windows 11, Safari on an iPad
+
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot
+      description: Optional. Drag an image in here.

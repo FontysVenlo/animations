@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: A question about an assignment or the course
+    url: https://github.com/FontysVenlo/animations#what-doesnt-belong-here
+    about: Ask your teacher during class instead. Issues are for problems with and ideas for the animations.

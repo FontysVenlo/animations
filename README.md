@@ -1,94 +1,156 @@
-# HashMap Visualiser
+# Animations
 
-This browser app lets students step through a `HashMap`, one line at a time, forwards and backwards. At each step it shows:
+Step-by-step animations for programming lessons. Each one lets you step through real code, one line at a time, forwards and backwards, and shows what is hard to see when you only read the code.
 
-- the code: `Main.java`, a simplified `HashMap.java`, the chosen `Book.java` and, where Book doesn't override a method, `Object.java`;
-- the Book objects;
-- the map's 8 lists;
-- what is printed, the calls so far and the call stack.
+**Open them at [fontysvenlo.github.io/animations](https://fontysvenlo.github.io/animations/).**
 
-The point of it is to make visible **when `hashCode` is called and when `equals` is called**, and how that depends on the way
-`Book` implements them. It goes with the lesson on hash maps (MOOC part 8).
+| Animation | Goes with | What it shows |
+|---|---|---|
+| [HashMap Visualiser](https://fontysvenlo.github.io/animations/hashmap/) | Java, MOOC part 8: hash maps | When `hashCode` and `equals` are called, for seven `Book` implementations |
+| [Inheritance Visualiser](https://fontysvenlo.github.io/animations/inheritance/) | Java, MOOC part 9: inheritance and interfaces | Which method is executed: what the compiler checks with the static type, and how Java finds the method from the dynamic type |
 
-**Book implementations:**
-- no overrides (Object's `hashCode` and `equals`);
+## Using the animations
+
+| Key | Action |
+|---|---|
+| ← / → (or A / D) | Step back / forward |
+| ↑ / ↓ (or W / S) | Previous / next call |
+| Home / End | First / last step |
+| Space | Play or pause |
+| Esc | Restore a maximised card, or leave full screen |
+
+- **Sharing:** the address bar always holds what you chose and the step you are at. Copy it to share exactly what you see, e.g. [`…/inheritance/?example=vehicles&static=Vehicle&dynamic=Car&method=move&step=10`](https://fontysvenlo.github.io/animations/inheritance/?example=vehicles&static=Vehicle&dynamic=Car&method=move&step=10).
+- **Projector:** maximise a card to fill the window with larger text, or use full screen.
+- **Step into:** each animation can hide its detail steps (the lines inside `hashCode` and `equals`, or each class the method lookup checks), so a call shows as one step.
+- **Light and dark:** follows your system setting.
+
+### HashMap Visualiser
+
+You choose a `Book` implementation and a scenario, then step through `Main.java`, a simplified `HashMap.java` and `Book.java`. The cards show the `Book` objects and the map's 8 lists. The Calls tab lists every map call with how often it called `hashCode` and `equals`. Switching the `Book` keeps you at the same call, so implementations can be compared call by call.
+
+The `Book` implementations are:
+- no overrides;
 - generated `hashCode` and `equals`;
 - `hashCode` returns 4;
 - a random `hashCode`;
 - `hashCode` on the author only;
-- only `equals` overridden;
-- only `hashCode` overridden.
+- only `equals`;
+- only `hashCode`.
 
-**Scenarios:**
-- *Loans*: the lesson's `Main.java`;
-- *Overwrite or duplicate?*: `put(got, 1)`, `put(got, 2)` and `put(got2, 3)`, then `size()`.
+The scenarios are the lesson's *Loans*, and *Overwrite or duplicate?*. For a `hashCode` that depends on identity or chance, ↻ draws new numbers.
+
+### Inheritance Visualiser
+
+Choose an example (*Parts*: `Part`, `Engine`, `ElectricEngine`; *Vehicles*: `Vehicle`, `MotorizedVehicle`, `Car`, `Motorcycle`, `Bicycle`, `Moveable`, `Startable`). Then choose:
+- the static type (the variable);
+- the dynamic type (the object);
+- a method to call, or a type to cast to.
+
+Or pick one of the scenarios. Stepping through `Main.java` and the classes, you see:
+
+1. **Compile time:**
+   - whether the variable may refer to the object;
+   - where the compiler finds the method, in the static type and its supertypes;
+   - or the compile error javac gives.
+2. **Runtime:** how Java looks for the method's code from the dynamic type upwards. A call on `this` starts again at the dynamic type, and `super` starts at the superclass. A cast is checked against the dynamic type and can throw a `ClassCastException`.
+
+The Lookups tab lists every call with its static type, where it was declared, where the lookup started and which code ran.
+
+## Report a problem or suggest an idea
+
+This repository is public: anyone with a GitHub account can open an issue. Go to [**Issues → New issue**](https://github.com/FontysVenlo/animations/issues/new/choose) and pick a form. In an animation, the 💬 button in the header opens the bug form with the animation and a link to your current step already filled in.
+
+| Form | Issue type | Use it when |
+|---|---|---|
+| **Bug: something is wrong** | Bug | An animation is broken, shows something that real Java doesn't do, or explains something wrongly or unclearly |
+| **Idea: an improvement or a new animation** | Feature | Something could be clearer, or a topic deserves an animation of its own |
+
+The issue type is set by the form, so you don't have to choose it. Teachers use a third type, **Task**, for planned work such as "add an animation for streams"; you won't need it.
+
+To make a bug easy to fix:
+- include the link to the step (the address bar), so we see exactly what you see;
+- say what you expected, and what real Java does if it differs;
+- mention your browser, and add a screenshot if it's about how something looks.
+
+### What doesn't belong here
+
+- **Questions about an assignment or the course:** ask your teacher during class.
+- **Solutions to assignments, passwords or personal information:** issues are public, so don't post them.
 
 ## How it works
 
-The map is the MOOC's "array of lists". `put` and `get`:
-1. call `key.hashCode()` once;
-2. pick a list with `Math.abs(hash % 8)`;
-3. check the pairs in that list as `java.util.HashMap` does: `pair.hash == hash && (pair.key == key || key.equals(pair.key))`.
+Every animation is a small browser app built with [Svelte](https://svelte.dev), [Vite](https://vite.dev) and TypeScript. The code you see is shown with [CodeMirror](https://codemirror.net). The animations share one shell: the layout, the timeline, playback, the keyboard, maximise and full screen, and the shareable URL.
 
-So `equals` only runs when the hash codes match and the keys are different objects.
+```
+java/<animation>/*.java ──(?raw import)──► the code students see, with // @markers
+                                             │
+choices ──► simulate() ──► one immutable snapshot per step: line, call stack, console, what the visual shows
+                                             │
+UI renders steps[i]  ·  → = i + 1  ·  ← = i − 1
+```
 
-The Java students see is real Java, in [`java/`](java/):
+- **Real Java:** the code students see is real Java in [`java/`](java/). Lines the simulation stops on end with a marker such as `// @put.hash`. The marker is removed from the code shown ([`src/lib/lines.ts`](src/lib/lines.ts)).
+- **Simulation:** each animation's `simulate()` follows that code by hand and records a snapshot at every step. The current file and line, the call stack, the console and everything the visual needs are in that snapshot. Stepping backwards is just showing an earlier snapshot.
+- **Golden tests:** each animation has a `java.test.ts` that compiles and runs the real Java with `javac` and `java`, and checks that it prints exactly what the animation's console shows.
+  - For HashMap, it runs every `Book` × scenario.
+  - For Inheritance, it covers all 592 combinations, including javac's compile errors and the JVM's `ClassCastException` messages.
+  - The tests are skipped when there is no JDK.
 
-| File | Contents |
-|---|---|
-| `java/HashMap.java` | The simplified map |
-| `java/Object.java` | A shortened `java.lang.Object`; for display only |
-| `java/book/*.java` | One `Book.java` per implementation |
-
-`Main.java` is generated from the scenario data in [`src/model/scenarios.ts`](src/model/scenarios.ts).
-
-- **Simulation:** [`src/model/simulate.ts`](src/model/simulate.ts) follows that code by hand and records an immutable snapshot at every step. Lines are found through end-of-line markers such as `// @put.hash`, which are removed from the code shown.
-- **Golden test:** [`src/model/java.test.ts`](src/model/java.test.ts) compiles and runs the real Java for every Book × scenario and checks that it prints exactly what the visualiser's console shows. The test is skipped when there is no JDK.
-- **Exact numbers:** hash codes are computed as Java computes them (`String.hashCode`, `71 * hash + …` with int overflow), so the numbers match a real run.
-- **Seed:** identity hash codes (Object's `hashCode`) and random numbers come from a seed. **↻** draws new ones.
-
-The books are the ones from the lesson's `Main.java`, but with "George R.R. Martin" spelled correctly. The lesson file says "Gearge", so fix it there too if you want the hash codes in a live demo to match.
+```
+src/
+  lib/            shared: Shell and the other components, StepSession, CodeMirror setup, app.css
+  animations.ts   the list of animations (index page, report button)
+  index/          the index page
+  hashmap/        App, components, session, url, model/ (simulate, scenarios, tests)
+  inheritance/    App, components, session, url, model/ (hierarchy, scenarios, simulate, tests)
+java/hashmap/, java/inheritance/   the Java students see
+index.html, hashmap/index.html, inheritance/index.html   one page per animation
+```
 
 ## Development
 
-Requires Node 22.12 or newer (`.nvmrc` pins the major version). A JDK is needed for the golden test.
+You need Node 22.12 or newer (`.nvmrc` pins the major version) and a JDK (17 or newer) for the golden tests.
 
 ```sh
 npm install
-npm run dev        # start the dev server
-npm test           # run the tests (including the golden Java test)
+npm run dev        # dev server at http://localhost:5173/animations/
+npm test           # all tests, including the golden Java tests
 npm run check      # type-check (svelte-check)
 npm run build      # check, then build into dist/
 npm run preview    # serve the built site
 ```
 
-## Adding a Book implementation or a scenario
+### Adding an animation
 
-- **Book:** add `java/book/<id>.java` and mark the lines the simulation stops on, with the same markers as
-  [`generated.java`](java/book/generated.java). Then add an entry to `VARIANTS` in [`src/model/variants.ts`](src/model/variants.ts).
-  If the new `hashCode` or `equals` behaves in a new way, add a case for it in `simulate.ts`.
-- **Scenario:** add an entry to `SCENARIOS` in [`src/model/scenarios.ts`](src/model/scenarios.ts).
-- Then run `npm test`.
+1. Add it to `ANIMATIONS` in [`src/animations.ts`](src/animations.ts) (id, title, topic, description, icon). Add its name to the `animation` dropdowns in [`.github/ISSUE_TEMPLATE/bug.yml`](.github/ISSUE_TEMPLATE/bug.yml) and [`idea.yml`](.github/ISSUE_TEMPLATE/idea.yml).
+2. Create `<id>/index.html` (copy one of the others) and add it to `build.rollupOptions.input` in [`vite.config.ts`](vite.config.ts).
+3. Put the code students see in `java/<id>/`, with `// @marker` comments on the lines to stop on.
+4. In `src/<id>/`:
+   - write `model/simulate.ts`, whose steps extend `BaseStep` from [`src/lib/trace.ts`](src/lib/trace.ts);
+   - write a `Session` that extends `StepSession`;
+   - write an `App.svelte` that fills the `Shell`'s snippets (controls, code, visual, lower tabs);
+   - write a `main.ts`.
+   The two existing animations show the pattern.
+5. Add a `model.test.ts` and a golden `java.test.ts`.
 
-## Using the app
+Animations that don't step through Java can share the shell too, or use their own page. Anything listed in `animations.ts` appears on the index.
 
-| Key | Action |
-|---|---|
-| ← / → (or A / D) | step back / forward |
-| ↑ / ↓ (or W / S) | previous / next map call |
-| Home / End | first / last step |
-| Space | play or pause |
+## Contributing
 
-- **Step into hashCode and equals:** turn it off to skip the lines inside Book. Each call then shows as one step with its result.
-- **Calls tab:** one row per map call, with how often it called `hashCode` and `equals`. Click a call to go there.
-  Switching the Book keeps you at the same call, so implementations can be compared call by call.
-- **Projector:** maximise a card to make it fill the window and scale up, or use full screen.
-- **Sharing:** the URL holds the Book, the scenario, the step and, after ↻, the seed. For example,
-  `?book=constant&scenario=loans&step=120` links to that moment.
+Pull requests are welcome.
+- Commit messages and pull request titles follow [Conventional Commits](https://www.conventionalcommits.org) (`feat:`, `fix:`, `docs:`, …).
+- [CI](.github/workflows/ci.yml) runs the tests and the build on every pull request, and they must pass.
+- Dependabot keeps the dependencies and actions up to date.
 
 ## Deployment
 
-Every push to `main` is published on GitHub Pages by [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). It
-runs the tests, builds the site for the repository's Pages path and deploys it. In the repository settings,
-**Pages → Source** must be **GitHub Actions**. Other branches and pull requests are checked by
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+Every push to `main` is published on GitHub Pages by [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). The workflow:
+1. runs the tests;
+2. builds the site for the repository's Pages path;
+3. deploys it.
+
+In the repository settings, **Pages → Source** must be **GitHub Actions**.
+
+## License
+
+[MIT](LICENSE)
