@@ -126,7 +126,7 @@ index.html, hashmap/index.html, …   one page per animation
 
 ## Development
 
-You need Node 22.12 or newer (`.nvmrc` pins the major version). The golden tests need a JDK (17 or newer) and git.
+You need Node 26 or newer, the current LTS. `.nvmrc` pins it: fnm and nvm switch to it, and CI and the deploy use it. The golden tests need a JDK (17 or newer) and git.
 
 ```sh
 npm install

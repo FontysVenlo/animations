@@ -16,6 +16,9 @@ updates:
       # svelte-check supports TypeScript 5 and 6 only. Remove this once it supports 7.
       - dependency-name: "typescript"
         update-types: ["version-update:semver-major"]
+      # The types for the Node version in .nvmrc (an LTS): raise both together at the next LTS.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
