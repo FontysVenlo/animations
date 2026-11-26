@@ -14,6 +14,7 @@ export default defineConfig({
         // One page per visualisation, plus the index.
         rollupOptions: {
             input: {
+                index: page('index.html'),
                 hashmap: page('hashmap/index.html'),
             },
         },
