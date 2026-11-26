@@ -30,6 +30,10 @@ export interface BaseStep<F extends string = string> {
     readonly note?: string;
     /** The current line is an error, e.g. a compile error. */
     readonly error?: boolean;
+    /** Label of the current file in the code column; default "running". */
+    readonly status?: string;
+    /** Other lines to mark like a waiting caller, e.g. the line the compiler is checking. */
+    readonly marks?: readonly { readonly file: F; readonly line: number }[];
     /** Bottom (main) to top (the running method). */
     readonly frames: readonly Frame<F>[];
     /** Everything printed so far. */

@@ -16,6 +16,7 @@ export default defineConfig({
             input: {
                 index: page('index.html'),
                 hashmap: page('hashmap/index.html'),
+                inheritance: page('inheritance/index.html'),
             },
         },
     },

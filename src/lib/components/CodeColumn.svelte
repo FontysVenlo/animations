@@ -7,26 +7,28 @@
     let { step, files }: { step: BaseStep; files: readonly CodeFile[] } = $props();
 
     function highlightsFor(file: string): CodeHighlights | null {
-        const callers = step.frames
-            .slice(0, -1)
-            .filter((f) => f.file === file)
-            .map((f) => f.line);
+        const callers = [...step.frames.slice(0, -1), ...(step.marks ?? [])].filter((f) => f.file === file).map((f) => f.line);
         const current = step.file === file ? step.line : 0;
         if (!current && callers.length === 0) return null;
         return { current, callers, note: current ? step.note : undefined, error: current ? step.error : undefined };
     }
 
-    const state = (file: string) => (step.file === file ? 'running' : step.frames.some((f) => f.file === file) ? 'waiting' : '');
+    const state = (file: string) =>
+        step.file === file
+            ? (step.status ?? 'running')
+            : step.frames.some((f) => f.file === file) || step.marks?.some((m) => m.file === file)
+              ? 'waiting'
+              : '';
 </script>
 
 <div class="files">
     {#each files as file (file.id)}
         {@const status = state(file.id)}
-        <section class="file" class:running={status === 'running'} class:idle={status === ''} style:flex-grow={file.weight}>
+        <section class="file" class:idle={status === ''} style:flex-grow={file.weight}>
             <header class="file-header">
                 <code class="name">{file.name}</code>
                 {#if file.detail}<span class="detail">{file.detail}</span>{/if}
-                {#if status}<span class="status {status}">{status}</span>{/if}
+                {#if status}<span class="status" class:current={step.file === file.id} class:error={step.file === file.id && step.error}>{status}</span>{/if}
             </header>
             <CodePanel source={file.source} highlights={highlightsFor(file.id)} />
         </section>
@@ -81,14 +83,18 @@
         font-weight: 600;
     }
 
-    .status.running {
+    .status {
+        background: var(--border);
+        color: var(--text-muted);
+    }
+
+    .status.current {
         background: var(--accent);
         color: var(--on-accent);
     }
 
-    .status.waiting {
-        background: var(--border);
-        color: var(--text-muted);
+    .status.current.error {
+        background: var(--danger);
     }
 
     .file.idle :global(.cm-content) {
